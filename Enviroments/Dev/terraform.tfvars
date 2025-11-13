@@ -266,7 +266,7 @@ subnet_nsg_assoc = {
 
 key_vaults = {
   kv1 = {
-    key_vault_name              = "dkcprodkv11"
+    key_vault_name              = "dkcprodkv12"
     location                    = "West US 2"
     resource_group_name         = "dev_rg_01"
     enabled_for_disk_encryption = true
@@ -291,28 +291,28 @@ key_vault_secrets = {
   vm_users = {
     secret_name         = "vm-username"
     secret_value        = "adminuser"
-    key_vault_name      = "dkcprodkv11"
+    key_vault_name      = "dkcprodkv12"
     resource_group_name = "dev_rg_01"
   }
 
   vm_pass = {
     secret_name         = "vm-password"
     secret_value        = "Bbpl@#123456"
-    key_vault_name      = "dkcprodkv11"
+    key_vault_name      = "dkcprodkv12"
     resource_group_name = "dev_rg_01"
   }
 
   sql_user = {
     secret_name         = "db-username"
     secret_value        = "dbuser"
-    key_vault_name      = "dkcprodkv11"
+    key_vault_name      = "dkcprodkv12"
     resource_group_name = "dev_rg_01"
   }
 
   sql_pass = {
     secret_name         = "db-password"
     secret_value        = "Bbpl@#123456"
-    key_vault_name      = "dkcprodkv11"
+    key_vault_name      = "dkcprodkv12"
     resource_group_name = "dev_rg_01"
   }
 
@@ -377,13 +377,15 @@ nics = {
 
 vms = {
   vm1 = {
-    vm_name             = "app-vm-01"
-    location            = "West US 2"
-    resource_group_name = "dev_rg_01"
-    size                = "Standard_B1s"
-    key_vault_name      = "dkcprodkv11"
-    secret_name         = "vm-username"
-    secret_password     = "vm-password"
+    vm_name                         = "app-vm-01"
+    location                        = "West US 2"
+    resource_group_name             = "dev_rg_01"
+    size                            = "Standard_B1s"
+    nic_name                        = "dev-nic-01"
+    key_vault_name                  = "dkcprodkv12"
+    secret_name                     = "vm-username"
+    secret_password                 = "vm-password"
+    disable_password_authentication = false
 
     os_disk = {
       caching              = "ReadWrite"
@@ -404,13 +406,15 @@ vms = {
   }
 
   vm2 = {
-    vm_name             = "db-vm-01"
-    location            = "West US 2"
-    resource_group_name = "dev_rg_01"
-    size                = "Standard_B1s"
-    key_vault_name      = "dkcprodkv11"
-    secret_name         = "vm-username"
-    secret_password     = "vm-password"
+    vm_name                         = "db-vm-01"
+    location                        = "West US 2"
+    resource_group_name             = "dev_rg_01"
+    size                            = "Standard_B1s"
+    nic_name                        = "dev-nic-02"
+    key_vault_name                  = "dkcprodkv12"
+    secret_name                     = "vm-username"
+    secret_password                 = "vm-password"
+    disable_password_authentication = false
 
     os_disk = {
       caching              = "ReadWrite"
@@ -450,7 +454,7 @@ sql_servers = {
     version                       = "12.0"
     secret_name                   = "db-username"
     secret_password               = "db-password"
-    key_vault_name                = "dkcprodkv11"
+    key_vault_name                = "dkcprodkv12"
     connection_policy             = "Default"
     minimum_tls_version           = "1.2"
     public_network_access_enabled = true

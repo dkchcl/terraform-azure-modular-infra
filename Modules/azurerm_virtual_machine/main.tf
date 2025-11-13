@@ -27,8 +27,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   # Optional arguments
-  admin_username                                         = data.azurerm_key_vault_secret.kvs[each.key].id
-  admin_password                                         = data.azurerm_key_vault_secret.kvs1[each.key].id
+  admin_username                                         = data.azurerm_key_vault_secret.kvs[each.key].value
+  admin_password                                         = data.azurerm_key_vault_secret.kvs1[each.key].value
   disable_password_authentication                        = try(each.value.disable_password_authentication, null)
   computer_name                                          = try(each.value.computer_name, null)
   allow_extension_operations                             = try(each.value.allow_extension_operations, null)
