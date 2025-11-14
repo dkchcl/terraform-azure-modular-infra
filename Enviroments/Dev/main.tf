@@ -28,7 +28,7 @@ module "nsg" {
 }
 
 module "subnet_nsg_nic_assoc" {
-  depends_on           = [module.nsg, module.subnet]
+  depends_on           = [module.nsg, module.subnet, module.nic]
   source               = "../../Modules/azurerm_subnet_nsg_nic_assoc"
   subnet_nsg_nic_assoc = var.subnet_nsg_nic_assoc
 }

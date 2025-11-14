@@ -227,7 +227,7 @@ subnet_nsg_nic_assoc = {
   sub_nsg_assoc2 = {
     nsg_name             = "devnsg01"
     virtual_network_name = "dev-vnet-01"
-    subnet_name          = "subnet-02"
+    subnet_name          = "subnet-01"
     resource_group_name  = "dev_rg_01"
     nic_name             = "dev-nic-02"
   }
@@ -362,6 +362,7 @@ nics = {
       }
     }
 
+    dns_servers                    = ["8.8.2.2"]
     ip_forwarding_enabled          = true
     accelerated_networking_enabled = false
     tags = {
@@ -392,8 +393,8 @@ vms = {
 
     source_image_reference = {
       publisher = "Canonical"
-      offer     = "0001-com-ubuntu-server-jammy"
-      sku       = "22_04-lts"
+      offer     = "UbuntuServer"
+      sku       = "18.04-LTS"
       version   = "latest"
     }
 
@@ -421,8 +422,8 @@ vms = {
 
     source_image_reference = {
       publisher = "Canonical"
-      offer     = "0001-com-ubuntu-server-jammy"
-      sku       = "22_04-lts"
+      offer     = "UbuntuServer"
+      sku       = "18.04-LTS"
       version   = "latest"
     }
 
