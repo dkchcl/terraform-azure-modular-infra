@@ -156,16 +156,16 @@ nsgs = {
       },
 
       {
-        name                         = "MultiPortsAndPrefixesRule1"
-        priority                     = 200
-        direction                    = "Inbound"
-        access                       = "Allow"
-        protocol                     = "Tcp"
-        description                  = "Allow multiple ports from multiple prefixes"
-        source_port_ranges           = ["80", "1000-2000", "3000", "443"]
-        destination_port_ranges      = ["80", "8080", "10000-10010"]
-        source_address_prefixes      = ["10.0.0.0/24", "192.168.1.0/24"]
-        destination_address_prefixes = ["0.0.0.0/0", ]
+        name                       = "MultiPortsAndPrefixesRule1"
+        priority                   = 200
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        description                = "Allow multiple ports from multiple prefixes"
+        source_port_range          = "*"
+        destination_port_range     = "*"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
       },
 
       {
@@ -213,23 +213,75 @@ nsgs = {
   }
 }
 
+# Network Interface 
+
+nics = {
+  nic1 = {
+    name                 = "dev-nic-01"
+    location             = "West US 2"
+    resource_group_name  = "dev_rg_01"
+    virtual_network_name = "dev-vnet-01"
+    subnet_name          = "subnet-01"
+    ip_configuration = {
+      ipconfig1 = {
+        name                          = "ipconfig1"
+        private_ip_address_allocation = "Dynamic"
+        private_ip_address_version    = "IPv4"
+        primary                       = true
+      }
+    }
+
+    dns_servers                    = ["8.8.8.8", "8.8.4.4"]
+    ip_forwarding_enabled          = true
+    accelerated_networking_enabled = false
+    tags = {
+      environment = "dev"
+      owner       = "team-network"
+    }
+  }
+
+  nic2 = {
+    name                 = "dev-nic-02"
+    location             = "West US 2"
+    resource_group_name  = "dev_rg_01"
+    virtual_network_name = "dev-vnet-01"
+    subnet_name          = "subnet-01"
+    ip_configuration = {
+      ipconfig1 = {
+        name                          = "ipconfig1"
+        private_ip_address_allocation = "Dynamic"
+        private_ip_address_version    = "IPv4"
+        primary                       = true
+      }
+    }
+
+    dns_servers                    = ["8.8.2.2"]
+    ip_forwarding_enabled          = true
+    accelerated_networking_enabled = false
+    tags = {
+      environment = "test"
+      owner       = "team-network"
+    }
+  }
+}
+
 # Subnets and NSGs Association
 
 subnet_nsg_nic_assoc = {
   sub_nsg_assoc1 = {
-    nsg_name             = "devnsg01"
-    virtual_network_name = "dev-vnet-01"
-    subnet_name          = "subnet-01"
-    resource_group_name  = "dev_rg_01"
-    nic_name             = "dev-nic-01"
+    nsg_name = "devnsg01"
+    # virtual_network_name = "dev-vnet-01"
+    # subnet_name          = "subnet-01"
+    resource_group_name = "dev_rg_01"
+    nic_name            = "dev-nic-01"
   }
 
   sub_nsg_assoc2 = {
-    nsg_name             = "devnsg01"
-    virtual_network_name = "dev-vnet-01"
-    subnet_name          = "subnet-01"
-    resource_group_name  = "dev_rg_01"
-    nic_name             = "dev-nic-02"
+    nsg_name = "devnsg01"
+    # virtual_network_name = "dev-vnet-01"
+    # subnet_name          = "subnet-01"
+    resource_group_name = "dev_rg_01"
+    nic_name            = "dev-nic-02"
   }
 }
 
@@ -318,58 +370,6 @@ key_vault_secrets = {
     resource_group_name = "dev_rg_01"
   }
 
-}
-
-# Network Interface 
-
-nics = {
-  nic1 = {
-    name                 = "dev-nic-01"
-    location             = "West US 2"
-    resource_group_name  = "dev_rg_01"
-    virtual_network_name = "dev-vnet-01"
-    subnet_name          = "subnet-01"
-    ip_configuration = {
-      ipconfig1 = {
-        name                          = "ipconfig1"
-        private_ip_address_allocation = "Dynamic"
-        private_ip_address_version    = "IPv4"
-        primary                       = true
-      }
-    }
-
-    dns_servers                    = ["8.8.8.8", "8.8.4.4"]
-    ip_forwarding_enabled          = true
-    accelerated_networking_enabled = false
-    tags = {
-      environment = "dev"
-      owner       = "team-network"
-    }
-  }
-
-  nic2 = {
-    name                 = "dev-nic-02"
-    location             = "West US 2"
-    resource_group_name  = "dev_rg_01"
-    virtual_network_name = "dev-vnet-01"
-    subnet_name          = "subnet-01"
-    ip_configuration = {
-      ipconfig1 = {
-        name                          = "ipconfig1"
-        private_ip_address_allocation = "Dynamic"
-        private_ip_address_version    = "IPv4"
-        primary                       = true
-      }
-    }
-
-    dns_servers                    = ["8.8.2.2"]
-    ip_forwarding_enabled          = true
-    accelerated_networking_enabled = false
-    tags = {
-      environment = "test"
-      owner       = "team-network"
-    }
-  }
 }
 
 # Virtual Machines
