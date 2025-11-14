@@ -8,17 +8,15 @@ variable "load_balancers" {
     sku                 = optional(string, "Standard")
     sku_tier            = optional(string, "Regional")
     tags                = optional(map(string))
-    # subnet_name         = optional(string)
     pip_name            = optional(string)
     frontend_ip_configuration = optional(map(object({
-      name                                               = string
-      zones                                              = optional(list(string))
-      subnet_id                                          = optional(string)
+      name  = string
+      zones = optional(list(string))
+      # subnet_name         = optional(string)
       gateway_load_balancer_frontend_ip_configuration_id = optional(string)
       private_ip_address                                 = optional(string)
       private_ip_address_allocation                      = optional(string)
       private_ip_address_version                         = optional(string)
-      public_ip_address_id                               = optional(string)
       public_ip_prefix_id                                = optional(string)
     })))
 

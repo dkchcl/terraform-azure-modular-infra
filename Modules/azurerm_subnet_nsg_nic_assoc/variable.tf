@@ -1,4 +1,4 @@
-variable "subnet_nsg_assoc" {
+variable "subnet_nsg_nic_assoc" {
 
 }
 

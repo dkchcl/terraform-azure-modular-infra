@@ -28,9 +28,9 @@ module "nsg" {
 }
 
 module "subnet_nsg_nic_assoc" {
-  depends_on       = [module.nsg, module.subnet]
-  source           = "../../Modules/azurerm_subnet_nsg_nic_assoc"
-  subnet_nsg_assoc = var.subnet_nsg_assoc
+  depends_on           = [module.nsg, module.subnet]
+  source               = "../../Modules/azurerm_subnet_nsg_nic_assoc"
+  subnet_nsg_nic_assoc = var.subnet_nsg_nic_assoc
 }
 
 # module "bastion_host" {
@@ -58,7 +58,7 @@ module "nic" {
 }
 
 module "vm" {
-  depends_on = [module.vnet, module.subnet, module.nic, module.nsg, module.kvs]
+  depends_on = [module.nic, module.nsg, module.kvs]
   source     = "../../Modules/azurerm_virtual_machine"
   vms        = var.vms
 }
@@ -81,17 +81,17 @@ module "sql_db" {
   sql_databases = var.sql_databases
 }
 
-# module "load_balancer" {
-#   depends_on     = [module.rg, module.subnet, module.public_ip, module.vm]
-#   source         = "../../Modules/azurerm_load_balancer"
-#   load_balancers = var.load_balancers
-# }
+module "load_balancer" {
+  depends_on     = [module.rg, module.subnet, module.public_ip, module.vm]
+  source         = "../../Modules/azurerm_load_balancer"
+  load_balancers = var.load_balancers
+}
 
-# module "nic_ba_pool_assoc" {
-#   depends_on        = [module.load_balancer]
-#   source            = "../../Modules/azurerm_nic_backend_address_pool_assoc"
-#   nic_ba_pool_assoc = var.nic_ba_pool_assoc
-# }
+module "nic_ba_pool_assoc" {
+  depends_on        = [module.load_balancer]
+  source            = "../../Modules/azurerm_nic_backend_address_pool_assoc"
+  nic_ba_pool_assoc = var.nic_ba_pool_assoc
+}
 
 
 

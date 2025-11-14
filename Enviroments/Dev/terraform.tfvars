@@ -162,7 +162,7 @@ nsgs = {
         access                       = "Allow"
         protocol                     = "Tcp"
         description                  = "Allow multiple ports from multiple prefixes"
-        source_port_ranges           = ["1000-2000", "3000", "443"]
+        source_port_ranges           = ["80", "1000-2000", "3000", "443"]
         destination_port_ranges      = ["80", "8080", "10000-10010"]
         source_address_prefixes      = ["10.0.0.0/24", "192.168.1.0/24"]
         destination_address_prefixes = ["0.0.0.0/0", ]
@@ -215,12 +215,13 @@ nsgs = {
 
 # Subnets and NSGs Association
 
-subnet_nsg_assoc = {
+subnet_nsg_nic_assoc = {
   sub_nsg_assoc1 = {
     nsg_name             = "devnsg01"
     virtual_network_name = "dev-vnet-01"
     subnet_name          = "subnet-01"
     resource_group_name  = "dev_rg_01"
+    nic_name             = "dev-nic-01"
   }
 
   sub_nsg_assoc2 = {
@@ -228,6 +229,7 @@ subnet_nsg_assoc = {
     virtual_network_name = "dev-vnet-01"
     subnet_name          = "subnet-02"
     resource_group_name  = "dev_rg_01"
+    nic_name             = "dev-nic-02"
   }
 }
 
@@ -266,7 +268,7 @@ subnet_nsg_assoc = {
 
 key_vaults = {
   kv1 = {
-    key_vault_name              = "dkcprodkv12"
+    key_vault_name              = "dkcprodkv13"
     location                    = "West US 2"
     resource_group_name         = "dev_rg_01"
     enabled_for_disk_encryption = true
@@ -291,28 +293,28 @@ key_vault_secrets = {
   vm_users = {
     secret_name         = "vm-username"
     secret_value        = "adminuser"
-    key_vault_name      = "dkcprodkv12"
+    key_vault_name      = "dkcprodkv13"
     resource_group_name = "dev_rg_01"
   }
 
   vm_pass = {
     secret_name         = "vm-password"
     secret_value        = "Bbpl@#123456"
-    key_vault_name      = "dkcprodkv12"
+    key_vault_name      = "dkcprodkv13"
     resource_group_name = "dev_rg_01"
   }
 
   sql_user = {
     secret_name         = "db-username"
     secret_value        = "dbuser"
-    key_vault_name      = "dkcprodkv12"
+    key_vault_name      = "dkcprodkv13"
     resource_group_name = "dev_rg_01"
   }
 
   sql_pass = {
     secret_name         = "db-password"
     secret_value        = "Bbpl@#123456"
-    key_vault_name      = "dkcprodkv12"
+    key_vault_name      = "dkcprodkv13"
     resource_group_name = "dev_rg_01"
   }
 
@@ -327,7 +329,6 @@ nics = {
     resource_group_name  = "dev_rg_01"
     virtual_network_name = "dev-vnet-01"
     subnet_name          = "subnet-01"
-    # pip_name             = "dev-pip-01"
     ip_configuration = {
       ipconfig1 = {
         name                          = "ipconfig1"
@@ -338,9 +339,8 @@ nics = {
     }
 
     dns_servers                    = ["8.8.8.8", "8.8.4.4"]
-    ip_forwarding_enabled          = false
-    accelerated_networking_enabled = true
-    internal_dns_name_label        = "dev-nic1"
+    ip_forwarding_enabled          = true
+    accelerated_networking_enabled = false
     tags = {
       environment = "dev"
       owner       = "team-network"
@@ -352,15 +352,13 @@ nics = {
     location             = "West US 2"
     resource_group_name  = "dev_rg_01"
     virtual_network_name = "dev-vnet-01"
-    subnet_name          = "subnet-02"
-    # pip_name             = "dev-pip-01"
+    subnet_name          = "subnet-01"
     ip_configuration = {
       ipconfig1 = {
         name                          = "ipconfig1"
-        private_ip_address_allocation = "Static"
+        private_ip_address_allocation = "Dynamic"
         private_ip_address_version    = "IPv4"
         primary                       = true
-        private_ip_address            = "10.0.2.5"
       }
     }
 
@@ -382,7 +380,7 @@ vms = {
     resource_group_name             = "dev_rg_01"
     size                            = "Standard_B1s"
     nic_name                        = "dev-nic-01"
-    key_vault_name                  = "dkcprodkv12"
+    key_vault_name                  = "dkcprodkv13"
     secret_name                     = "vm-username"
     secret_password                 = "vm-password"
     disable_password_authentication = false
@@ -411,7 +409,7 @@ vms = {
     resource_group_name             = "dev_rg_01"
     size                            = "Standard_B1s"
     nic_name                        = "dev-nic-02"
-    key_vault_name                  = "dkcprodkv12"
+    key_vault_name                  = "dkcprodkv13"
     secret_name                     = "vm-username"
     secret_password                 = "vm-password"
     disable_password_authentication = false
@@ -454,7 +452,7 @@ sql_servers = {
     version                       = "12.0"
     secret_name                   = "db-username"
     secret_password               = "db-password"
-    key_vault_name                = "dkcprodkv12"
+    key_vault_name                = "dkcprodkv13"
     connection_policy             = "Default"
     minimum_tls_version           = "1.2"
     public_network_access_enabled = true
@@ -483,91 +481,74 @@ sql_databases = {
 
 
 
-# load_balancers = {
-#   dev-lb = {
-#     # Load Balancer details
-#     lb_name             = "dev-lb-01"
-#     resource_group_name = "dev_rg_01"
-#     location            = "West US 2"
-#     sku                 = "Standard"
-#     sku_tier            = "Regional"
-#     tags = {
-#       environment = "production"
-#       owner       = "network-team"
-#     }
-#     # subnet_name = "subnet-02"
-#     pip_name = "dev-pip-01"
-#     # -------------------------------
-#     # Frontend IP configuration
-#     # -------------------------------
-#     frontend_ip_configuration = {
-#       fe1 = {
-#         name = "frontend-1"
-#         # zones                         = ["1", "2"]
-#         # private_ip_address            = "10.0.1.10"
-#         # private_ip_address_allocation = "Static"
-#         # private_ip_address_version    = "IPv4"
-#       }
-#     }
+load_balancers = {
+  dev-lb = {
+    # Load Balancer details
+    lb_name             = "dev-lb-01"
+    resource_group_name = "dev_rg_01"
+    location            = "West US 2"
+    sku                 = "Standard"
+    sku_tier            = "Regional"
+    pip_name            = "dev-pip-01"
+    tags = {
+      environment = "production"
+      owner       = "network-team"
+    }
 
-#     # -------------------------------
-#     # Backend Address Pool
-#     # -------------------------------
-#     ba_pool_name         = "backend-pool-1"
-#     synchronous_mode     = "Automatic"
-#     virtual_network_name = "dev-vnet-01"
-#     # tunnel_interface = {
-#     #   tun1 = {
-#     #     identifier = "1001"
-#     #     type       = "Internal"
-#     #     protocol   = "VXLAN"
-#     #     port       = 4789
-#     #   }
-#     # }
+    # Frontend IP configuration
+    frontend_ip_configuration = {
+      fe1 = {
+        name = "frontend-1"
+        # subnet_name = "subnet-02"      
+        # private_ip_address_allocation = "Dynamic"
+        # private_ip_address_version    = "IPv4"
+      }
+    }
 
-#     # -------------------------------
-#     # LB Probe
-#     # -------------------------------
-#     lb_probes_name      = "http-health-probe"
-#     port                = 80
-#     probe_protocol      = "Http"
-#     probe_threshold     = 3
-#     request_path        = "/health"
-#     interval_in_seconds = 10
-#     number_of_probes    = 3
+    # Backend Address Pool
+    ba_pool_name         = "backend-pool-1"
+    synchronous_mode     = "Automatic"
+    virtual_network_name = "dev-vnet-01"
 
-#     # -------------------------------
-#     # LB Rule
-#     # -------------------------------
-#     lb_rules_name                  = "http-rule"
-#     frontend_ip_configuration_name = "frontend-1"
-#     lbrule_protocol                = "Tcp"
-#     frontend_port                  = 80
-#     backend_port                   = 80
-#     floating_ip_enabled            = false
-#     idle_timeout_in_minutes        = 5
-#     load_distribution              = "Default"
-#     disable_outbound_snat          = false
-#     tcp_reset_enabled              = true
-#   }
-# }
+    # LB Probe
+    lb_probes_name      = "http-health-probe"
+    port                = 80
+    probe_protocol      = "Http"
+    probe_threshold     = 3
+    request_path        = "/"
+    interval_in_seconds = 10
+    number_of_probes    = 3
 
-# nic_ba_pool_assoc = {
-#   nic_ba_pool_assoc1 = {
-#     ip_configuration_name = "ipconfig1"
-#     resource_group_name   = "dev_rg_01"
-#     nic_name              = "dev-nic-01"
-#     lb_name               = "dev-lb-01"
-#     ba_pool_name          = "backend-pool-1"
-#   }
-#   nic_ba_pool_assoc2 = {
-#     ip_configuration_name = "ipconfig1"
-#     resource_group_name   = "dev_rg_01"
-#     nic_name              = "dev-nic-02"
-#     lb_name               = "dev-lb-01"
-#     ba_pool_name          = "backend-pool-1"
-#   }
-# }
+    # LB Rule
+    lb_rules_name                  = "http-rule"
+    frontend_ip_configuration_name = "frontend-1"
+    lbrule_protocol                = "Tcp"
+    frontend_port                  = 80
+    backend_port                   = 80
+    floating_ip_enabled            = false
+    idle_timeout_in_minutes        = 5
+    load_distribution              = "Default"
+    disable_outbound_snat          = false
+    tcp_reset_enabled              = true
+  }
+}
+
+nic_ba_pool_assoc = {
+  nic_ba_pool_assoc1 = {
+    ip_configuration_name = "ipconfig1"
+    resource_group_name   = "dev_rg_01"
+    nic_name              = "dev-nic-01"
+    lb_name               = "dev-lb-01"
+    ba_pool_name          = "backend-pool-1"
+  }
+  nic_ba_pool_assoc2 = {
+    ip_configuration_name = "ipconfig1"
+    resource_group_name   = "dev_rg_01"
+    nic_name              = "dev-nic-02"
+    lb_name               = "dev-lb-01"
+    ba_pool_name          = "backend-pool-1"
+  }
+}
 
 
 
